@@ -70,7 +70,8 @@ class RedditScrape:
         # adding title to text_used as well as the submission text and author again if available
         clean_title = pre_processors.word_sub(submission.title)
         text_used.append(clean_title)
-        if submission.is_self:
+
+        if len(submission.selftext) > 15:  # arbitrary number
             text_used.append(submission.selftext)
             authors.append(submission.author.name)
 
