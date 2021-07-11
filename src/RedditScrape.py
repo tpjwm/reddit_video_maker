@@ -55,6 +55,7 @@ class RedditScrape:
         # creates the comment list without including links, long comments or deleted/removed comments
         comments = []
         counter = 0
+
         while len(comments) < self.num_replies:
             comment = submission.comments.list()[counter]
             content = comment.body
@@ -62,8 +63,13 @@ class RedditScrape:
                 comments.append(comment)
             counter += 1
 
-        for comment in comments:
-            print(comment.body)
+        # adding title to text_used as well as the submission text and author again if available
+        clean_title = pre_processors.word_sub(submission.title)
+        text_used.append(clean_title)
+        if submission.is_self:
+            text_used.append(submission.selftext)
+            authors.append(submission.author.name)
+
         # adding post author and replies authors
         authors.append(submission.author.name)
         for comment in comments:
@@ -71,9 +77,6 @@ class RedditScrape:
                 authors.append(comment.author.name)
             except AttributeError:
                 authors.append('deleted')
-
-        clean_title = pre_processors.word_sub(submission.title)
-        text_used.append(clean_title)
 
         for i in range(0, len(comments)):
             # Push cleaned string into text_used

@@ -79,7 +79,7 @@ def main() -> int:
         # Creating a Video Editing object
         # Passing n_entries + 1, for # of images, since we have title + n replies
 
-        Editor = VideoEditor(int(video_meta['n_entries']), video_meta['title'])
+        Editor = VideoEditor(len(posts) - 1, video_meta['title'])
         Editor.create_movie()
         print('movie created')
 
