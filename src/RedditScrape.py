@@ -42,6 +42,8 @@ class RedditScrape:
         then the function loops through the strings of text turning them into
         a text to speech mp3 files and writes them to an mp3"""
 
+        charsInCommentLimit = 1500
+
         # Creating an instance of reddit api
         reddit = reddit_api()
 
@@ -59,7 +61,9 @@ class RedditScrape:
         while len(comments) < self.num_replies:
             comment = submission.comments.list()[counter]
             content = comment.body
-            if ("[" not in content) and ("www" not in content) and ("http" not in content) and (len(content) < 900):
+            if "[" in content or "www" in content or "http" in content or len(content) >= charsInCommentLimit:
+                pass
+            else:
                 comments.append(comment)
             counter += 1
 

@@ -21,12 +21,16 @@ FONT_PATH = '../fonts/'
 
 class ImageCreator:
     def create_image_for(text, author, name):
-        '''takes a string of text, an author, and a name that the file should be
+        """takes a string of text, an author, and a name that the file should be
         writes the text to the background of a default image in ../images/
-        saves the image as a new image to name.jpeg'''
+        saves the image as a new image to name.jpeg"""
         # Creating the file path to save the image. 
+        smallerText = False
+        wordsPerLine = 10
 
-        # text = text.decode("utf-8")
+        if len(text) > 900:
+            smallerText = True
+            wordsPerLine = 20
 
         complete_file = os.path.join(IMAGE_PATH, name + '.jpeg')
         # Creating the file path to open font file
@@ -36,11 +40,16 @@ class ImageCreator:
         img = Image.open(IMAGE_PATH + 'default.jpeg')
         # Allowing us to draw to it
         draw = ImageDraw.Draw(img)
+
         # Creating font and text size
-        font = ImageFont.truetype(font_file, 50)
+        if smallerText:
+            fontSize = 25
+        else:
+            fontSize = 50
+        font = ImageFont.truetype(font_file, fontSize)
 
         # Creating author font: slightly larger than text size
-        author_font = ImageFont.truetype(font_file, 55)
+        author_font = ImageFont.truetype(font_file, fontSize + 5)
         # Writing author name to file
         draw.text((20, 50), f'u/{author}', font=author_font, fill=(225, 0, 0))
 
@@ -51,7 +60,7 @@ class ImageCreator:
         image_width = 1920
         y = 150  # starting y index
 
-        for line in ImageCreator.split_string(text, 10):
+        for line in ImageCreator.split_string(text, wordsPerLine):
             text_dimensions = ImageCreator.get_text_dimensions(line, font)
             x = (image_width - text_dimensions[0]) / 2
 
