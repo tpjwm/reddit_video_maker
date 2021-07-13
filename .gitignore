@@ -151,5 +151,13 @@ cython_debug/
 /audio
 /edited_videos
 /images/*
-!/image/default.jpg
+!/images/default1.jpeg
+!/images/default2.jpeg
+!/images/default3.jpeg
+!/images/default4.jpeg
+!/images/default5.jpeg
+!/images/default6.jpeg
+!/images/default7.jpeg
+!/images/default8.jpeg
+!/images/default9.jpeg
 /src/temp-audio.m4a

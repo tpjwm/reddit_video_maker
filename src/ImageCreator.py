@@ -9,6 +9,7 @@
 # File holds some utility functions that may be called inside of the main
 
 import os.path  # used to create image file path
+import random
 
 from PIL import Image
 from PIL import ImageFont
@@ -37,7 +38,7 @@ class ImageCreator:
         font_file = os.path.join(FONT_PATH, 'AppleGothic.ttf')
 
         # Opening default image from path
-        img = Image.open(IMAGE_PATH + 'default.jpeg')
+        img = Image.open(IMAGE_PATH + 'default' + str(random.randint(1, 9)) + '.jpeg')
         # Allowing us to draw to it
         draw = ImageDraw.Draw(img)
 
