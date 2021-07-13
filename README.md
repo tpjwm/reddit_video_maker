@@ -38,6 +38,6 @@ This project finds popular Reddit threads and converts them into text-to-speech 
 - [x] Create a way to populate list.txt
 - [x] Remove unsuitable comments (deleted, reliant on links, too long)
 - [x] Increase comment length limit
-- [ ] Add more backgrounds / randomly select from them
+- [x] Add more backgrounds / randomly select from them
 - [ ] Support for making video compilation of images (and videos?) found on reddit
 - [ ] Add background music (royalty free) with random assortment to choose from
