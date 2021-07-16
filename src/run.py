@@ -2,6 +2,8 @@
 # This will import the Reddit Scraping Class and the Video Editing Class
 
 import argparse  # Used to handle command line arguments
+import os
+import sys
 
 from RedditScrape import RedditScrape  # Importing reddit scraping class to acquire posts and authors
 
@@ -10,6 +12,9 @@ from TextToSpeech import TextToSpeech  # Importing tts class to make mp3 of post
 from ImageCreator import ImageCreator  # Generates images of posts
 
 from VideoEdit import VideoEditor  # Edits all the tts mp3 and Images into a mp4 video
+
+# images, videos, tts
+CONTENT_TYPE = "videos"
 
 
 def main() -> int:
@@ -41,6 +46,17 @@ def main() -> int:
         print('Invalid path to file')
         return 1
 
+    if CONTENT_TYPE == "tts":
+        makeTTS(input_metadata)
+    elif CONTENT_TYPE == "videos":
+        makeVideos(input_metadata)
+    elif CONTENT_TYPE == "images":
+        makeImages(input_metadata)
+
+    return 0
+
+
+def makeTTS(input_metadata):
     # Loop through each video meta object and create videos
     for video_meta in input_metadata:
         print(video_meta)
@@ -64,12 +80,12 @@ def main() -> int:
         for i, post in enumerate(posts):
             print(f'{i}: {post}')
 
-        # Text to speech 
+        # Text to speech
         tts = TextToSpeech()  # Creating tts class
-        tts.create_tts(posts)  # Creating all tts mp3 files for video 
+        tts.create_tts(posts)  # Creating all tts mp3 files for video
 
         # Image Creation
-        # Creating image for title 
+        # Creating image for title
         ImageCreator.create_image_for(posts[0], authors[0], 'title')
 
         # Creating image post for the replies: reply0.jpg, reply1.jpg, ...
@@ -83,7 +99,35 @@ def main() -> int:
         Editor.create_movie()
         print('movie created')
 
-    return 0
+
+import youtube_dl
+
+
+def makeVideos(input_metadata):
+    videos_path = '../videos/'
+    save_path = '../edited_videos/'
+
+    try:
+        os.makedirs(videos_path)
+        print(f'directory: {videos_path} created')
+    except FileExistsError:
+        pass
+
+    try:
+        for item in input_metadata:
+            link_to_post = item["url"]
+            if 'v.redd' in link_to_post:
+                ydl_opts = {'outtmpl': videos_path + item["title"] + '.%(ext)s'}
+                with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([link_to_post, ])
+    except Exception as err:
+        print("Error:", sys.exc_info()[0])
+        print(err)  # __str__ allows args to be printed directly,
+        raise
+
+
+def makeImages(input_metadata):
+    pass
 
 
 if __name__ == '__main__':

@@ -161,3 +161,4 @@ cython_debug/
 !/images/default8.jpeg
 !/images/default9.jpeg
 /src/temp-audio.m4a
+/videos
