@@ -40,7 +40,7 @@ def main() -> int:
             whitelist = set(
                 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ')  # maybe regex could be used instead
             data[2] = ''.join(filter(whitelist.__contains__, data[2]))
-            input_metadata.append({'url': data[0], 'n_entries': int(data[1]), 'title': data[2]})
+            input_metadata.append({'id': data[0], 'n_entries': int(data[1]), 'title': data[2]})
 
     except FileNotFoundError:
         print('Invalid path to file')
@@ -61,7 +61,7 @@ def makeTTS(input_metadata):
     for video_meta in input_metadata:
         print(video_meta)
 
-        reddit_scraper = RedditScrape(video_meta['url'], video_meta['n_entries'])
+        reddit_scraper = RedditScrape(video_meta['id'], video_meta['n_entries'])
 
         # Returns 2 lists of strings, [all posts] [authors of posts]
         # index 0 of both are associated with the title, the rest are replies to the thread
@@ -95,7 +95,7 @@ def makeTTS(input_metadata):
         # Creating a Video Editing object
         # Passing n_entries + 1, for # of images, since we have title + n replies
 
-        Editor = VideoEditor(len(posts) - 1, video_meta['title'])
+        Editor = VideoEditor(video_meta['title'], len(posts) - 1)
         Editor.create_movie()
         print('movie created')
 
@@ -115,7 +115,9 @@ def makeVideos(input_metadata):
 
     try:
         for item in input_metadata:
-            link_to_post = item["url"]
+            reddit_scraper = RedditScrape(item['id'])
+            link_to_post = reddit_scraper.get_url()
+
             if 'v.redd' in link_to_post:
                 ydl_opts = {'outtmpl': videos_path + item["title"] + '.%(ext)s'}
                 with youtube_dl.YoutubeDL(ydl_opts) as ydl:

@@ -8,7 +8,7 @@ NUM_ENTRIES = 50  # Replace with number of videos/links desired
 list_file = open(r"list.txt", "w+")
 for submission in reddit.subreddit(SUBREDDIT).top("day", limit=NUM_ENTRIES):
     try:
-        list_entry = submission.url + " " + str(NUM_COMMENTS) + " " + submission.title + '\n'
+        list_entry = submission.id + " " + str(NUM_COMMENTS) + " " + submission.title + '\n'
         list_file.write(list_entry)
     except UnicodeEncodeError:
         pass

@@ -27,7 +27,7 @@ gtts.tokenizer.symbols.SUB_PAIRS.append(
 
 class RedditScrape:
 
-    def __init__(self, url, num_replies):
+    def __init__(self, url, num_replies=0):
         """url: the link of the reddit post to scrape comments/title from
         num_replies: the number of top replies program will take to make video
         path: path to folder: [audio] which stores audio files created or used"""
@@ -50,7 +50,7 @@ class RedditScrape:
         text_used = []  # Creating list filled with strings of the title and all comment text
         authors = []  # Creating a list of authors from the post strings
 
-        submission = reddit.submission(url=self.url)  # Getting submission post
+        submission = reddit.submission(id=self.url)  # Getting submission post
         submission.comment_sort = 'top'  # Sorting the comments on the post to top voted
         submission.comments.replace_more(limit=0)  # removing weird 'more' comments
 
@@ -91,3 +91,8 @@ class RedditScrape:
 
         # Returns text used: [title & replies], and [authors]
         return text_used, authors
+
+    def get_url(self):
+        reddit = reddit_api()
+        submission = reddit.submission(id=self.url)  # Getting submission post
+        return submission.url

@@ -7,16 +7,17 @@ from PIL import Image  # Image library
 
 
 class VideoEditor:
-    def __init__(self, num_replies, video_name):
+    def __init__(self, video_name, num_replies=0):
         self.num_replies = num_replies
         self.video_name = video_name
         self.image_path = '../images/'
         self.audio_path = '../audio/'
+        self.videos_path = '../videos'
         self.save_path = '../edited_videos/'
 
         self.create_dir()  # Creates the edited videos dir if it doesnt exist
 
-        print(self.num_replies)
+        print("Video editor initiated")
 
     def create_dir(self):
         """Creates the dir to hold the edited video if it doesnt already exist"""
@@ -65,3 +66,8 @@ class VideoEditor:
                                   temp_audiofile='temp-audio.m4a',
                                   remove_temp=True
                                   )
+
+    def create_compilation_of_videos(self):
+        """
+        Combines every mp4 file into one master video
+        """
