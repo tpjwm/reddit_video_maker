@@ -3,7 +3,17 @@
 
 from moviepy.editor import *  # movie editor
 import os  # used for some file grabbing
-from PIL import Image  # Image library
+import subprocess
+import random
+
+
+def has_audio(filename):
+    result = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+                             "format=nb_streams", "-of",
+                             "default=noprint_wrappers=1:nokey=1", filename],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT)
+    return int(result.stdout) - 1
 
 
 class VideoEditor:
@@ -14,6 +24,7 @@ class VideoEditor:
         self.audio_path = '../audio/'
         self.videos_path = '../videos/'
         self.save_path = '../edited_videos/'
+        self.music_path = '../free_music/'
 
         self.create_dir()  # Creates the edited videos dir if it doesnt exist
 
@@ -72,11 +83,18 @@ class VideoEditor:
         Combines every mp4 file into one master video
         """
         clips = []  # clips are mp4 clips to be combined to make entire movie
-        clip_count = 0
         path, dirs, files = next(os.walk(self.videos_path))
 
         for file in files:
-            clips.append(VideoFileClip(self.videos_path + file))
+            if has_audio(self.videos_path + file):
+                clips.append(VideoFileClip(self.videos_path + file))
+            else:
+                video_clip = VideoFileClip(self.videos_path + file)
+                audio_clip = AudioFileClip(self.music_path + str(random.randint(1, 17)) + '.mp3').set_duration(video_clip.duration)
+                tmp_mp4 = concatenate([video_clip], method='compose')
+                new_audio_clip = CompositeAudioClip([audio_clip])
+                tmp_mp4.audio = new_audio_clip
+                clips.append(tmp_mp4)
 
         final_vid = concatenate(clips, method='compose')
 
