@@ -130,6 +130,7 @@ def makeVideos(input_metadata):
     editor = VideoEditor("Compilation video")
     editor.create_compilation_of_videos()
 
+
 def makeImages(input_metadata):
     pass
 
