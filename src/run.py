@@ -127,6 +127,8 @@ def makeVideos(input_metadata):
         print(err)  # __str__ allows args to be printed directly,
         raise
 
+    editor = VideoEditor("Compilation video")
+    editor.create_compilation_of_videos()
 
 def makeImages(input_metadata):
     pass

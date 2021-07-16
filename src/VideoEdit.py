@@ -12,7 +12,7 @@ class VideoEditor:
         self.video_name = video_name
         self.image_path = '../images/'
         self.audio_path = '../audio/'
-        self.videos_path = '../videos'
+        self.videos_path = '../videos/'
         self.save_path = '../edited_videos/'
 
         self.create_dir()  # Creates the edited videos dir if it doesnt exist
@@ -71,3 +71,13 @@ class VideoEditor:
         """
         Combines every mp4 file into one master video
         """
+        clips = []  # clips are mp4 clips to be combined to make entire movie
+        clip_count = 0
+        path, dirs, files = next(os.walk(self.videos_path))
+
+        for file in files:
+            clips.append(VideoFileClip(self.videos_path + file))
+
+        final_vid = concatenate(clips, method='compose')
+
+        final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4')
