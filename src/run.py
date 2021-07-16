@@ -38,7 +38,7 @@ def main() -> int:
         for entry in lines:
             data = entry.split(' ', 2)  # split string at spaces... file format is: link num_comments title
             whitelist = set(
-                'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ')  # maybe regex could be used instead
+                'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789-')  # maybe regex could be used instead
             data[2] = ''.join(filter(whitelist.__contains__, data[2]))
             input_metadata.append({'id': data[0], 'n_entries': int(data[1]), 'title': data[2]})
 
