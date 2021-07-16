@@ -25,6 +25,7 @@ class VideoEditor:
         self.videos_path = '../videos/'
         self.save_path = '../edited_videos/'
         self.music_path = '../free_music/'
+        self.reddit_image_path = '../reddit_images/'
 
         self.create_dir()  # Creates the edited videos dir if it doesnt exist
 
@@ -90,7 +91,8 @@ class VideoEditor:
                 clips.append(VideoFileClip(self.videos_path + file))
             else:
                 video_clip = VideoFileClip(self.videos_path + file)
-                audio_clip = AudioFileClip(self.music_path + str(random.randint(1, 17)) + '.mp3').set_duration(video_clip.duration)
+                audio_clip = AudioFileClip(self.music_path + str(random.randint(1, 17)) + '.mp3').set_duration(
+                    video_clip.duration)
                 tmp_mp4 = concatenate([video_clip], method='compose')
                 new_audio_clip = CompositeAudioClip([audio_clip])
                 tmp_mp4.audio = new_audio_clip
@@ -99,3 +101,44 @@ class VideoEditor:
         final_vid = concatenate(clips, method='compose')
 
         final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4')
+
+        # remove every file in videos folder after saving the compilation
+        for f in os.listdir(self.videos_path):
+            os.remove(os.path.join(self.videos_path, f))
+
+    def create_compilation_of_images(self):
+        clips = []  # clips are mp4 clips to be combined to make entire movie
+        path, dirs, files = next(os.walk(self.reddit_image_path))
+
+        song_duration = 0
+        time_counter = 0
+
+        for file in files:
+            img_clip = ImageClip(self.reddit_image_path + file).set_duration(5)
+            time_counter += 5
+            tmp_mp3 = None
+            if time_counter >= song_duration:
+                audio_clip = AudioFileClip(self.music_path + str(random.randint(1, 17)) + '.mp3')
+                song_duration = audio_clip.duration
+                tmp_mp3 = CompositeAudioClip([audio_clip])
+                time_counter = 0
+
+            tmp_mp4 = concatenate([img_clip], method='compose')
+            if tmp_mp3 is not None:
+                tmp_mp4.audio = tmp_mp3
+
+            clips.append(tmp_mp4)
+
+        # Combine all clips, and combine into master video
+
+        final_vid = concatenate(clips, method='compose')
+
+        final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4',
+                                  fps=10,
+                                  codec='libx264',
+                                  audio_codec='aac',
+                                  temp_audiofile='temp-audio.m4a',
+                                  remove_temp=True
+                                  )
+        for f in os.listdir(self.reddit_image_path):
+            os.remove(os.path.join(self.reddit_image_path, f))

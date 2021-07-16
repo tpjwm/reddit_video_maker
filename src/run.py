@@ -3,7 +3,9 @@
 
 import argparse  # Used to handle command line arguments
 import os
+import shutil
 import sys
+import requests
 
 from RedditScrape import RedditScrape  # Importing reddit scraping class to acquire posts and authors
 
@@ -14,7 +16,7 @@ from ImageCreator import ImageCreator  # Generates images of posts
 from VideoEdit import VideoEditor  # Edits all the tts mp3 and Images into a mp4 video
 
 # images, videos, tts
-CONTENT_TYPE = "videos"
+CONTENT_TYPE = "images"
 
 
 def main() -> int:
@@ -105,7 +107,6 @@ import youtube_dl
 
 def makeVideos(input_metadata):
     videos_path = '../videos/'
-    save_path = '../edited_videos/'
 
     try:
         os.makedirs(videos_path)
@@ -132,7 +133,36 @@ def makeVideos(input_metadata):
 
 
 def makeImages(input_metadata):
-    pass
+    image_path = '../reddit_images/'
+
+    try:
+        os.makedirs(image_path)
+        print(f'directory: {image_path} created')
+    except FileExistsError:
+        pass
+
+    try:
+        for item in input_metadata:
+            reddit_scraper = RedditScrape(item['id'])
+            link_to_post = reddit_scraper.get_url()
+
+            if 'v.redd' not in link_to_post:
+                filename = link_to_post.split('/')[-1]
+                r = requests.get(link_to_post, stream=True)
+                if r.status_code == 200:
+                    r.raw_decode_content = True
+                    with open(image_path + filename, 'wb') as f:
+                        shutil.copyfileobj(r.raw, f)
+                else:
+                    print("Image download failed: ", link_to_post)
+
+    except Exception as err:
+        print("Error:", sys.exc_info()[0])
+        print(err)  # __str__ allows args to be printed directly,
+        raise
+
+    editor = VideoEditor("Compilation video of images")
+    editor.create_compilation_of_images()
 
 
 if __name__ == '__main__':
