@@ -103,8 +103,11 @@ class VideoEditor:
         final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4')
 
         # remove every file in videos folder after saving the compilation
-        for f in os.listdir(self.videos_path):
-            os.remove(os.path.join(self.videos_path, f))
+        try:
+            for f in os.listdir(self.videos_path):
+                os.remove(os.path.join(self.videos_path, f))
+        except Exception as err:
+            print("Error deleting files: ", err)
 
     def create_compilation_of_images(self):
         clips = []  # clips are mp4 clips to be combined to make entire movie
@@ -124,7 +127,7 @@ class VideoEditor:
                 time_counter = 0
 
             tmp_mp4 = concatenate([img_clip], method='compose')
-            if tmp_mp3 is not None:
+            if tmp_mp3 is not None:  # otherwise it dies
                 tmp_mp4.audio = tmp_mp3
 
             clips.append(tmp_mp4)
@@ -133,12 +136,6 @@ class VideoEditor:
 
         final_vid = concatenate(clips, method='compose')
 
-        final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4',
-                                  fps=10,
-                                  codec='libx264',
-                                  audio_codec='aac',
-                                  temp_audiofile='temp-audio.m4a',
-                                  remove_temp=True
-                                  )
+        final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4', fps=24)
         for f in os.listdir(self.reddit_image_path):
             os.remove(os.path.join(self.reddit_image_path, f))
