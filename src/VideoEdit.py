@@ -113,29 +113,16 @@ class VideoEditor:
         clips = []  # clips are mp4 clips to be combined to make entire movie
         path, dirs, files = next(os.walk(self.reddit_image_path))
 
-        song_duration = 0
-        time_counter = 0
-
         for file in files:
             img_clip = ImageClip(self.reddit_image_path + file).set_duration(5)
-            time_counter += 5
-            tmp_mp3 = None
-            if time_counter >= song_duration:
-                audio_clip = AudioFileClip(self.music_path + str(random.randint(1, 17)) + '.mp3')
-                song_duration = audio_clip.duration
-                tmp_mp3 = CompositeAudioClip([audio_clip])
-                time_counter = 0
-
             tmp_mp4 = concatenate([img_clip], method='compose')
-            if tmp_mp3 is not None:  # otherwise it dies
-                tmp_mp4.audio = tmp_mp3
-
             clips.append(tmp_mp4)
 
         # Combine all clips, and combine into master video
 
         final_vid = concatenate(clips, method='compose')
 
-        final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4', fps=24)
+        final_vid.write_videofile(f'{self.save_path}{self.video_name}.mp4', fps=10)
+
         for f in os.listdir(self.reddit_image_path):
             os.remove(os.path.join(self.reddit_image_path, f))

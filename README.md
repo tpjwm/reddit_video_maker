@@ -1,7 +1,7 @@
 # reddit_video_maker
 This project searches reddit for content and compiles it into either:
 * TTS videos (reading post and comments) 
-* Image compilations (with music randomly added)
+* Image compilations
 * Video compilations (with music added to videos without sound)
 
 
@@ -29,7 +29,7 @@ This project searches reddit for content and compiles it into either:
 * Puts the text into text to speech to create mp3 file for soundtrack behind clips
 ### Images
 * Scrapes user submitted images and links to images for each post using requests api and turns them into image clips
-* Adds music to the image clips and combines them into a mp4 video
+* Combines image clips into mp4 video compilation
 ### Videos
 * Scrapes user submitted videos and audio for each post using youtube-dl api and ffmpeg to recombine audio and video files.
 * Compiles the video clips into one large video, adding music to those clips who did not have audio
@@ -40,5 +40,5 @@ This project searches reddit for content and compiles it into either:
 - [x] Remove unsuitable comments (deleted, reliant on links, too long)
 - [x] Increase comment length limit
 - [x] Add more backgrounds / randomly select from them
-- [ ] Support for making video compilation of images (and videos?) found on reddit
+- [x] Support for making video compilation of images and videos found on reddit
 - [x] Add background music (royalty free) with random assortment to choose from
